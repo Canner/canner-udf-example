@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.canner.udf;
 
-import io.airlift.slice.Slices;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -27,41 +25,13 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
-import static com.canner.udf.scalar.MaskFunction.decrypt;
-import static com.canner.udf.scalar.MaskFunction.encrypt;
-import static com.canner.udf.scalar.MaskFunction.maskColumn;
-import static com.canner.udf.scalar.MaskFunction.maskEmail;
-import static com.canner.udf.scalar.MaskFunction.ripeMD160;
+import static com.canner.udf.scalar.EncryptDecryptWithKey.decrypt;
+import static com.canner.udf.scalar.EncryptDecryptWithKey.encrypt;
 import static io.airlift.slice.Slices.utf8Slice;
-import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.Assert.assertEquals;
 
-public class TestMaskFunction
+public class TestEncryptDecryptWithKey
 {
-    @Test
-    public void testMaskColumn()
-    {
-        assertEquals(
-                maskColumn(Slices.utf8Slice("test")),
-                utf8Slice("*****"));
-    }
-
-    @Test
-    public void testRipeMD160()
-            throws NoSuchAlgorithmException
-    {
-        assertEquals(
-                new String(ripeMD160(utf8Slice("canner-dev")).getBytes()),
-                "2a9dc86c2b13606ffeef8b257f619edfadf7e1d6");
-    }
-
-    @Test
-    public void testEmailMask()
-    {
-        assertEquals(
-                maskEmail(utf8Slice("canner-dev@cannerdata.com"), 5),
-                utf8Slice("canne*****@cannerdata.com"));
-    }
-
     @Test
     public void testEncryptDecrypt()
             throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException

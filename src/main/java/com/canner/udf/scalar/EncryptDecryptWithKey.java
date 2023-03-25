@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.canner.udf.scalar;
 
 import io.airlift.slice.Slice;
@@ -30,18 +31,14 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 
-import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 
-import static io.airlift.slice.Slices.utf8Slice;
-
-public class MaskFunction
+public class EncryptDecryptWithKey
 {
     private static final Key secretKey;
     private static final IvParameterSpec ivParameterSpec;
@@ -55,37 +52,6 @@ public class MaskFunction
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private MaskFunction() {}
-
-    @Description("RipeMD160")
-    @ScalarFunction("ripemd_160")
-    @SqlType(StandardTypes.VARCHAR)
-    public static Slice ripeMD160(@SqlType(StandardTypes.VARCHAR) Slice value)
-            throws NoSuchAlgorithmException
-    {
-        MessageDigest messageDigest = MessageDigest.getInstance("RipeMD160");
-        messageDigest.update(value.getBytes());
-        byte[] result = messageDigest.digest();
-        return utf8Slice(new BigInteger(1, result).toString(16));
-    }
-
-    @Description("mask value in column")
-    @ScalarFunction("mask_column")
-    @SqlType(StandardTypes.VARCHAR)
-    public static Slice maskColumn(@SqlType(StandardTypes.VARCHAR) Slice value)
-    {
-        return utf8Slice("*****");
-    }
-
-    @Description("mask email")
-    @ScalarFunction("mask_email")
-    @SqlType(StandardTypes.VARCHAR)
-    public static Slice maskEmail(@SqlType(StandardTypes.VARCHAR) Slice value, @SqlType(StandardTypes.BIGINT) long num)
-    {
-        String email = value.toStringUtf8();
-        return utf8Slice(email.replaceAll("(^[^@]{" + num + "}|(?!^)\\G)[^@]", "$1*"));
     }
 
     @Description("encrypt")

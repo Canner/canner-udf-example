@@ -16,8 +16,10 @@
 
 package com.canner.udf;
 
-import com.canner.udf.scalar.MaskFunction;
-import com.canner.udf.scalar.MathFunction;
+import com.canner.udf.scalar.DataMasking;
+import com.canner.udf.scalar.EncryptDecryptWithKey;
+import com.canner.udf.scalar.ExtendedHashFunction;
+import com.canner.udf.scalar.MathOperation;
 import io.trino.spi.Plugin;
 
 import java.util.Collections;
@@ -31,8 +33,15 @@ public class UdfPlugin
     public Set<Class<?>> getFunctions()
     {
         Set<Class<?>> functions = new HashSet<>();
-        functions.add(MathFunction.class);
-        functions.add(MaskFunction.class);
+        // load udfs in DataMasking class
+        functions.add(DataMasking.class);
+        // load udfs in EncryptDecryptWithKey class
+        functions.add(EncryptDecryptWithKey.class);
+        // load udfs in ExtendedHashFunction class
+        functions.add(ExtendedHashFunction.class);
+        // load udfs in MathOperation class
+        functions.add(MathOperation.class);
+
         return Collections.unmodifiableSet(functions);
     }
 }

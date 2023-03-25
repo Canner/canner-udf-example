@@ -15,20 +15,32 @@
  */
 package com.canner.udf.scalar;
 
+import io.airlift.slice.Slice;
 import io.trino.spi.function.Description;
 import io.trino.spi.function.ScalarFunction;
 import io.trino.spi.function.SqlType;
 import io.trino.spi.type.StandardTypes;
 
-public class MathFunction
-{
-    private MathFunction() {}
+import static io.airlift.slice.Slices.utf8Slice;
 
-    @Description("math op")
-    @ScalarFunction("math_op")
-    @SqlType(StandardTypes.BIGINT)
-    public static long mathOpAddBigInt(@SqlType(StandardTypes.BIGINT) long left, @SqlType(StandardTypes.BIGINT) long right)
+public class DataMasking
+{
+    private DataMasking() {}
+
+    @Description("mask value in column")
+    @ScalarFunction("mask_column")
+    @SqlType(StandardTypes.VARCHAR)
+    public static Slice maskColumn(@SqlType(StandardTypes.VARCHAR) Slice ignoredValue)
     {
-        return left + right;
+        return utf8Slice("*****");
+    }
+
+    @Description("mask email")
+    @ScalarFunction("mask_email")
+    @SqlType(StandardTypes.VARCHAR)
+    public static Slice maskEmail(@SqlType(StandardTypes.VARCHAR) Slice value, @SqlType(StandardTypes.BIGINT) long num)
+    {
+        String email = value.toStringUtf8();
+        return utf8Slice(email.replaceAll("(^[^@]{" + num + "}|(?!^)\\G)[^@]", "$1*"));
     }
 }
