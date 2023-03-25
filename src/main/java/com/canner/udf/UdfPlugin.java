@@ -20,6 +20,8 @@ import com.canner.udf.scalar.DataMasking;
 import com.canner.udf.scalar.EncryptDecryptWithKey;
 import com.canner.udf.scalar.ExtendedHashFunction;
 import com.canner.udf.scalar.MathOperation;
+import com.canner.udf.scalar.TimestampSeqNo;
+import com.canner.udf.scalar.TimestampWithTZSeqNo;
 import io.trino.spi.Plugin;
 
 import java.util.Collections;
@@ -39,6 +41,10 @@ public class UdfPlugin
         functions.add(EncryptDecryptWithKey.class);
         // load udfs in ExtendedHashFunction class
         functions.add(ExtendedHashFunction.class);
+        // load udfs in TimestampSeqNo class
+        functions.add(TimestampSeqNo.class);
+        // load udfs in TimestampWithTZSeqNo class
+        functions.add(TimestampWithTZSeqNo.class);
         // load udfs in MathOperation class
         functions.add(MathOperation.class);
 

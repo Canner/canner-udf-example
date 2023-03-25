@@ -31,6 +31,18 @@ ripemd_160(varchar):varchar
 math_op(bigint,bigint):bigint
 ```
 
+- In TimestampSeqNo.java
+
+```text
+seq_no(timestamp(p)):varchar
+```
+
+- In TimestampWithTZSeqNo.java
+
+```text
+seq_no(timestamp(p) with time zone):varchar
+```
+
 ### Notices
 
 - `resources/META-INF/services/io.trino.spi.Plugin` is needed for canner to load the plugin. And the content of this file is the full class name of the plugin class. (i.e.
