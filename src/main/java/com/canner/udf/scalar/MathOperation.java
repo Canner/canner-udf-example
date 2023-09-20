@@ -16,9 +16,13 @@
 package com.canner.udf.scalar;
 
 import io.trino.spi.function.Description;
+import io.trino.spi.function.LiteralParameters;
 import io.trino.spi.function.ScalarFunction;
 import io.trino.spi.function.SqlType;
+import io.trino.spi.type.Int128;
 import io.trino.spi.type.StandardTypes;
+
+import static io.trino.spi.type.Int128Math.add;
 
 public class MathOperation
 {
@@ -30,5 +34,33 @@ public class MathOperation
     public static long mathOpAddBigInt(@SqlType(StandardTypes.BIGINT) long left, @SqlType(StandardTypes.BIGINT) long right)
     {
         return left + right;
+    }
+
+    @ScalarFunction("math_op")
+    @Description("math op")
+    public static final class MathOP
+    {
+        private MathOP() {}
+
+        // this is needed, otherwise mathOp(Int128, Int128) won't work
+        @LiteralParameters({"p", "s"})
+        @SqlType("decimal(p, s)")
+        public static long mathOp(@SqlType("decimal(p, s)") long left, @SqlType("decimal(p, s)") long right)
+        {
+            return left + right;
+        }
+
+        @LiteralParameters({"p", "s"})
+        @SqlType("decimal(p, s)")
+        public static Int128 mathOp(@SqlType("decimal(p, s)") Int128 left, @SqlType("decimal(p, s)") Int128 right)
+        {
+            long[] resultArray = new long[2];
+            add(
+                    left.getHigh(), left.getLow(),
+                    right.getHigh(), right.getLow(),
+                    resultArray,
+                    0);
+            return Int128.valueOf(resultArray);
+        }
     }
 }
